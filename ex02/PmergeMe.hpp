@@ -6,7 +6,7 @@
 /*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:05:33 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/21 17:09:01 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/08/22 15:18:00 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,10 +24,14 @@
 #include <vector>
 #include <cctype> // isdigit
 #include  <algorithm> // lower_bound
+#include <utility> // std::pair, std::make_pair
 
 class PmergeMe {
     private:
-        std::vector<size_t> _initial_list;
+        std::vector<size_t> _arg_list;
+        std::vector< std::pair<size_t, size_t> > _pairs;
+
+        // useless ?
         std::vector<size_t> _lower;
         std::vector<size_t> _upper;
         std::vector<size_t> _main;
@@ -40,11 +44,12 @@ class PmergeMe {
         PmergeMe& operator=(const PmergeMe& other);
 
         // void preSort();
-        void handlePairs();
-        bool swapPairs(size_t pair_idx); // will replace preSort()
+        void handlePairs(); // will replace preSort()
+        bool firstSwap(size_t stride);
+        bool swapBiggerPairs(size_t stride);
         void doFordJohson();
         void charChecker(char* av);
-        void print_list(std::vector<size_t>& list);
+        void printList(std::vector<size_t>& list);
         void setupMainList();
         std::vector<size_t> doJacobsthal(size_t max);
         void jacobLowerInMain(std::vector<size_t> idx_list);

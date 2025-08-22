@@ -6,7 +6,7 @@
 /*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/21 17:11:59 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/08/22 16:08:00 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ PmergeMe::PmergeMe(char** av)
     for (int i = 0; av[i]; i++)
     {
         charChecker(av[i]);
-        _initial_list.push_back(std::atoi(av[i]));
+        _arg_list.push_back(std::atoi(av[i]));
     }
 }
 
@@ -45,7 +45,7 @@ PmergeMe::PmergeMe(const PmergeMe& o)
 PmergeMe& PmergeMe::operator=(const PmergeMe& o)
 {
     if (this != &o)
-        _initial_list = o._initial_list;
+        _arg_list = o._arg_list;
     return *this;
 }
 
@@ -54,109 +54,89 @@ void PmergeMe::doFordJohson()
 {
     std::vector<size_t> jacob_list;
 
-    // preSort();
-    // std::sort(_upper.begin(), _upper.end());
+    if (_arg_list.size() <= 1)
+        return;
 
+    // will sort little pairs, big pairs, big big, etc.
+    handlePairs();
+
+        
+    // setupMainList();
     
-    setupMainList();
+    // jacob_list = doJacobsthal(_lower.size());
+    // //create vector with good idx (jacob_stal + merde)
     
-    jacob_list = doJacobsthal(_lower.size());
-    //create vector with good idx (jacob_stal + merde)
+    // printList(jacob_list);
+    // jacobLowerInMain(jacob_list);
     
-    print_list(jacob_list);
-    jacobLowerInMain(jacob_list);
-    
-    insertLastLowers();
-    // std::cout << "\nlower: "; // debug
-    // print_list(_lower);
-    // std::cout << "\nremaining_lower: "; // debug
-    // print_list(_remaining_lower);
-    // std::cout << "\nupper: "; // debug
-    // print_list(_upper);
-    std::cout << "\nmain: "; // debug
-    print_list(_main);
+    // insertLastLowers();
+    // // std::cout << "\nlower: "; // debug
+    // // printList(_lower);
+    // // std::cout << "\nremaining_lower: "; // debug
+    // // printList(_remaining_lower);
+    // // std::cout << "\nupper: "; // debug
+    // // printList(_upper);
+    // std::cout << "\nmain: "; // debug
+    // printList(_main);
 }
 
+
 // will replace preSort()
-bool PmergeMe::swapPairs(size_t pair_idx)
+bool PmergeMe::firstSwap(size_t stride)
 {
     bool swapped = false;
 
-    const size_t n = _initial_list.size();
-    
-    // move this part in doFordJohnson---------
-    if (n == 0) return;
-
-    if (n == 1)
+    for (size_t i = 0; i + 1 < _arg_list.size(); i += stride)
     {
-        std::cout << _initial_list[0] << std::endl;
-        exit (0);
-    }
-    // ----------------------------------------
-
-    for (size_t i = 0; i + 1 < n; i += 2)
-    {
-        if (_initial_list[i + 1] > _initial_list[i])
+        if (_arg_list[i + 1] > _arg_list[i])
         {
-            std::swap(_initial_list[i], _initial_list[i + 1]);   
+            std::swap(_arg_list[i], _arg_list[i + 1]);
             swapped = true;
         }
-    }
-
+        _pairs.push_back(std::make_pair(_arg_list[i], _arg_list[i + 1]));
+    }    
     return swapped;
 }
 
+
+bool PmergeMe::swapBiggerPairs(size_t stride)
+{
+    (void)stride;
+    bool swapped = false;
+    std::vector< std::pair<size_t, size_t> >::iterator it = _pairs.begin();
+
+    for (; it != _pairs.end(); ++it)
+        std::cout << it->first << ", " << it->second << std::endl;
+    
+    return swapped;
+}
 void PmergeMe::handlePairs()
 {
-    size_t pair_idx = 1;
-    bool swapped = false;
+    size_t stride = 2;
+    size_t turns = 1;
 
     while (true)
     {
-        if (swapPairs(pair_idx))
-            swapped = true;
-        
+        bool swapped = false;
+
+        if (turns == 1)
+        {
+            if (firstSwap(stride))
+                swapped = true;
+        }
+        else
+        {
+            if (swapBiggerPairs(stride))
+                swapped = true;
+        }
+
         if (!swapped)
             break;
-        pair_idx *= 2;   
+
+        stride *= 2;
+        turns += 1;
     }
 }
-
-// first step: compare paires in the initial _initial_list and sort each lower and upper in _lower and _upper
-// void PmergeMe::preSort()
-// {
-//     const size_t n = _initial_list.size();
-    
-//     if (n == 0)
-//         return;
-    
-//     if (n == 1)
-//     {
-//         std::cout << _initial_list[0] << std::endl;
-//         exit (0);
-//     }
-    
-//     size_t i = 0;
-
-//     for (; i + 1 < n; i += 2)
-//     {
-//         const size_t current = _initial_list[i];
-//         const size_t next = _initial_list[i + 1];
-
-//         if (current > next)
-//         {
-//             _upper.push_back(current);
-//             _lower.push_back(next);
-//         }
-//         else
-//         {
-//             _upper.push_back(next);
-//             _lower.push_back(current);
-//         }    
-//     }
-//     if (i < n)
-//         _upper.push_back(_initial_list[i]);  // choix arbitraire si taille de liste impaire
-// }
 
 
 // second step: do _main = lower[0] + _upper
@@ -190,9 +170,9 @@ void PmergeMe::jacobLowerInMain(std::vector<size_t> jacob_list)
     size_t ji = 0;
 
     std::cout << RED "actual main:" RESET << std::endl;
-    print_list(_main);
+    printList(_main);
     std::cout << RED "actual lower: " RESET << std::endl;
-    print_list(_lower);
+    printList(_lower);
     // i = 1 because we already moved the _lower[0] in the main list before this step.
     for (size_t i = 1; i < low_size; i++)
     {
@@ -246,7 +226,7 @@ void ft_error(std::string msg)
 }
 
 
-void PmergeMe::print_list(std::vector<size_t>& list)
+void PmergeMe::printList(std::vector<size_t>& list)
 {
     const size_t n = list.size();
 
