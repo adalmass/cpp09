@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:05:33 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/22 15:18:00 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/08/23 11:08:00 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
 
 # define RED     "\x1b[31m"
 # define RESET   "\x1b[0m"
@@ -45,8 +46,8 @@ class PmergeMe {
 
         // void preSort();
         void handlePairs(); // will replace preSort()
-        bool firstSwap(size_t stride);
-        bool swapBiggerPairs(size_t stride);
+        void firstSwap();
+        void swapBiggerPairs(size_t stride);
         void doFordJohson();
         void charChecker(char* av);
         void printList(std::vector<size_t>& list);

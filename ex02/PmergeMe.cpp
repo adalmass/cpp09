@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/22 16:08:00 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/08/23 12:28:59 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,10 @@ void PmergeMe::doFordJohson()
 
         
     // setupMainList();
-    
     // jacob_list = doJacobsthal(_lower.size());
     // //create vector with good idx (jacob_stal + merde)
-    
     // printList(jacob_list);
     // jacobLowerInMain(jacob_list);
-    
     // insertLastLowers();
     // // std::cout << "\nlower: "; // debug
     // // printList(_lower);
@@ -82,60 +79,43 @@ void PmergeMe::doFordJohson()
 
 
 // will replace preSort()
-bool PmergeMe::firstSwap(size_t stride)
+void PmergeMe::firstSwap()
 {
-    bool swapped = false;
+    const size_t n = _arg_list.size();
 
-    for (size_t i = 0; i + 1 < _arg_list.size(); i += stride)
+    for (size_t i = 0; i + 1 < n; i += 2)
     {
-        if (_arg_list[i + 1] > _arg_list[i])
-        {
-            std::swap(_arg_list[i], _arg_list[i + 1]);
-            swapped = true;
-        }
-        _pairs.push_back(std::make_pair(_arg_list[i], _arg_list[i + 1]));
-    }    
-    return swapped;
-}
-
-
-bool PmergeMe::swapBiggerPairs(size_t stride)
-{
-    (void)stride;
-    bool swapped = false;
-    std::vector< std::pair<size_t, size_t> >::iterator it = _pairs.begin();
-
-    for (; it != _pairs.end(); ++it)
-        std::cout << it->first << ", " << it->second << std::endl;
+        size_t a = _arg_list[i];
+        size_t b = _arg_list[i + 1];
     
-    return swapped;
-}
-void PmergeMe::handlePairs()
-{
-    size_t stride = 2;
-    size_t turns = 1;
-
-    while (true)
-    {
-        bool swapped = false;
-
-        if (turns == 1)
-        {
-            if (firstSwap(stride))
-                swapped = true;
-        }
-        else
-        {
-            if (swapBiggerPairs(stride))
-                swapped = true;
-        }
-
-        if (!swapped)
-            break;
-
-        stride *= 2;
-        turns += 1;
+        if (b > a)
+            std::swap(a, b);
+    
+        _pairs.push_back(std::make_pair(a, b));
     }
+}
+
+
+void PmergeMe::handlePairs()
+{   
+    firstSwap();
+    const size_t n = _pairs.size();
+
+    for (size_t stride = 1; stride < n; stride *= 2)
+        swapBiggerPairs(stride);
+}
+
+// TODO
+void PmergeMe::swapBiggerPairs(size_t stride)
+{
+    const size_t n = _pairs.size();
+    std::vector< std::pair<size_t, size_t> > higher_pairs;
+
+    for (size_t i = 0; i < n; i += 2 * stride)
+    {
+        // todo
+    }
+    
 }
 
 
