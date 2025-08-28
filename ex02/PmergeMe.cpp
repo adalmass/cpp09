@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/23 12:28:59 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/28 14:14:14 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,25 +85,25 @@ void PmergeMe::firstSwap()
 
     for (size_t i = 0; i + 1 < n; i += 2)
     {
-        size_t a = _arg_list[i];
-        size_t b = _arg_list[i + 1];
+        if (_arg_list[i + 1] > _arg_list[i])
+            std::swap(_arg_list[i + 1], _arg_list[i]);
     
-        if (b > a)
-            std::swap(a, b);
-    
-        _pairs.push_back(std::make_pair(a, b));
+        _pairs.push_back(std::make_pair(_arg_list[i], _arg_list[i + 1]));
     }
 }
 
 
 void PmergeMe::handlePairs()
 {   
+    printList(_arg_list);
     firstSwap();
+    printList(_arg_list);
     const size_t n = _pairs.size();
 
     for (size_t stride = 1; stride < n; stride *= 2)
         swapBiggerPairs(stride);
 }
+
 
 // TODO
 void PmergeMe::swapBiggerPairs(size_t stride)
@@ -113,9 +113,12 @@ void PmergeMe::swapBiggerPairs(size_t stride)
 
     for (size_t i = 0; i < n; i += 2 * stride)
     {
-        // todo
-    }
-    
+        const size_t mid = (i + stride < n) ? i + stride : n;
+        if (mid >= n) // no block at the right for comparaison
+            break;
+        
+        const size_t hi = (mid + stride < n) ? mid + stride : n;
+    }   
 }
 
 
