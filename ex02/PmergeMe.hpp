@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:05:33 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/23 11:08:00 by marvin           ###   ########.fr       */
+/*   Updated: 2025/08/29 15:43:46 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,14 +27,13 @@
 #include  <algorithm> // lower_bound
 #include <utility> // std::pair, std::make_pair
 
+
 class PmergeMe {
     private:
         std::vector<size_t> _arg_list;
         std::vector< std::pair<size_t, size_t> > _pairs;
 
         // useless ?
-        std::vector<size_t> _lower;
-        std::vector<size_t> _upper;
         std::vector<size_t> _main;
         std::vector<size_t> _remaining_lower;
 
@@ -44,18 +43,17 @@ class PmergeMe {
         PmergeMe(const PmergeMe& other);
         PmergeMe& operator=(const PmergeMe& other);
 
-        // void preSort();
+        void charChecker(char* av);
+        void doFordJohson();
         void handlePairs(); // will replace preSort()
         void firstSwap();
         void swapBiggerPairs(size_t stride);
-        void doFordJohson();
-        void charChecker(char* av);
-        void printList(std::vector<size_t>& list);
-        void setupMainList();
+        void movePairs(size_t i, size_t mid, size_t end, std::vector< std::pair<size_t, size_t> >& temp);
         std::vector<size_t> doJacobsthal(size_t max);
-        void jacobLowerInMain(std::vector<size_t> idx_list);
+        // void jacobLowerInMain(std::vector<size_t> idx_list);
         void binaryInsert(std::vector<size_t>& dest_list, int element);
-        void insertLastLowers();
+
+        void printList(std::vector<size_t>& list); // debug
 };
 
 void ft_error(std::string msg);

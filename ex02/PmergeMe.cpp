@@ -6,7 +6,7 @@
 /*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/28 14:14:14 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/08/29 16:24:08 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,8 @@ void PmergeMe::doFordJohson()
     // will sort little pairs, big pairs, big big, etc.
     handlePairs();
 
-        
-    // setupMainList();
-    // jacob_list = doJacobsthal(_lower.size());
-    // //create vector with good idx (jacob_stal + merde)
-    // printList(jacob_list);
+    jacob_list = doJacobsthal(_pairs.size());
+    
     // jacobLowerInMain(jacob_list);
     // insertLastLowers();
     // // std::cout << "\nlower: "; // debug
@@ -78,7 +75,6 @@ void PmergeMe::doFordJohson()
 }
 
 
-// will replace preSort()
 void PmergeMe::firstSwap()
 {
     const size_t n = _arg_list.size();
@@ -102,32 +98,71 @@ void PmergeMe::handlePairs()
 
     for (size_t stride = 1; stride < n; stride *= 2)
         swapBiggerPairs(stride);
+    
+    std::cout << "DEBUG _pairs:" << std::endl;
+    for (size_t i = 0; i < _pairs.size(); ++i) {
+        std::cout << "(" << _pairs[i].first << "," << _pairs[i].second << ") ";
+    }
+std::cout << std::endl;
+
 }
 
 
-// TODO
 void PmergeMe::swapBiggerPairs(size_t stride)
 {
     const size_t n = _pairs.size();
-    std::vector< std::pair<size_t, size_t> > higher_pairs;
+    if (n <2 || stride == 0)
+        return;
+
+    std::vector< std::pair<size_t, size_t> > temp;
 
     for (size_t i = 0; i < n; i += 2 * stride)
     {
-        const size_t mid = (i + stride < n) ? i + stride : n;
-        if (mid >= n) // no block at the right for comparaison
+        const size_t mid = (i + stride < n) ? i + stride : n; // searching the mid of _pairs (and the lenght of the left block)
+        if (mid >= n) 
             break;
         
-        const size_t hi = (mid + stride < n) ? mid + stride : n;
-    }   
+        const size_t end = (mid + stride < n) ? mid + stride : n; // end of the right block
+
+        temp.clear();
+
+        movePairs(i, mid, end, temp);
+        
+        for (size_t k = 0; k < temp.size(); ++k)
+            _pairs[i + k] = temp[k];
+    }
 }
 
-
-// second step: do _main = lower[0] + _upper
-void PmergeMe::setupMainList()
+void PmergeMe::movePairs(size_t i, size_t mid, size_t end, std::vector< std::pair<size_t, size_t> >& temp)
 {
-    _main.push_back(_lower[0]);
-    for (std::vector<size_t>::iterator it = _upper.begin(); it != _upper.end(); it++)
-        _main.push_back(*it);
+    size_t l_side = i;
+    size_t r_side = mid;
+
+    while (l_side < mid && r_side < end)
+    {
+        if (_pairs[l_side].first <= _pairs[r_side].first)
+        {
+            temp.push_back(_pairs[l_side]);
+            l_side++;   
+        }
+        else
+        {
+            temp.push_back(_pairs[r_side]);
+            r_side++;  
+        }
+    }
+
+    while (l_side < mid) // on vide ce qu' il reste du cote gauche
+    {
+        temp.push_back(_pairs[l_side]);
+        l_side++;
+    }
+
+    while (r_side < end) // pareil ici
+    {
+        temp.push_back(_pairs[r_side]);
+        r_side++;
+    }
 }
 
 
@@ -138,66 +173,101 @@ void PmergeMe::binaryInsert(std::vector<size_t>& dest_list, int element)
 }
 
 
-void PmergeMe::insertLastLowers()
-{
-    for (size_t i = 0; i < _remaining_lower.size(); i++)
-        binaryInsert(_main, _remaining_lower[i]);
-}
-
-
+// A REFAIRE
 // third step: use the idx for insert _lower in _main.
-void PmergeMe::jacobLowerInMain(std::vector<size_t> jacob_list)
-{
-    const size_t low_size = _lower.size();
-    const size_t jac_size = jacob_list.size();
-    size_t ji = 0;
-
-    std::cout << RED "actual main:" RESET << std::endl;
-    printList(_main);
-    std::cout << RED "actual lower: " RESET << std::endl;
-    printList(_lower);
-    // i = 1 because we already moved the _lower[0] in the main list before this step.
-    for (size_t i = 1; i < low_size; i++)
-    {
-        const size_t current = _lower[i];
-    
-        if (ji < jac_size && jacob_list[ji] == i)
-        {
-            std::cout << current << " added to _main" << std::endl;
-            binaryInsert(_main, current);
-            ji++;
-        }
-        else
-        { 
-            std::cout << current << " added to _remaining_lower" << std::endl;
-            binaryInsert(_remaining_lower, current);
-        }
-    }
-}
+// void PmergeMe::jacobLowerInMain(std::vector<size_t> jacob_list)
+// {
+//     const size_t low_size = _lower.size();
+//     const size_t jac_size = jacob_list.size();
+//     size_t ji = 0;
+//     std::cout << RED "actual main:" RESET << std::endl;
+//     printList(_main);
+//     std::cout << RED "actual lower: " RESET << std::endl;
+//     printList(_lower);
+//     // i = 1 because we already moved the _lower[0] in the main list before this step.
+//     for (size_t i = 1; i < low_size; i++)
+//     {
+//         const size_t current = _lower[i];
+//         if (ji < jac_size && jacob_list[ji] == i)
+//         {
+//             std::cout << current << " added to _main" << std::endl;
+//             binaryInsert(_main, current);
+//             ji++;
+//         }
+//         else
+//         { 
+//             std::cout << current << " added to _remaining_lower" << std::endl;
+//             binaryInsert(_remaining_lower, current);
+//         }
+//     }
+// }
 
 
 std::vector<size_t> PmergeMe::doJacobsthal(size_t max)
 {
-    std::vector<size_t> result;
-    size_t j0 = 0;
-    size_t j1 = 1;
+    std::vector<size_t> order;
 
     if (max == 0)
-        return result;
+        return order;
 
-    result.push_back(j1);
-    while (true)
+    size_t j0 = 0;
+    size_t j1 = 1;
+    std::vector<size_t> jSequence;
+
+    while (j1 < max)
     {
+        jSequence.push_back(j1);
         size_t jn = j1 + 2 * j0;
-        result.push_back(jn);
-        if (jn > max)
-            break;
-
         j0 = j1;
         j1 = jn;
-    
     }
-    return result;
+
+    size_t jIdx = 1;
+    size_t previous_idx = jSequence[jIdx];
+    size_t currentJacElement = jSequence[jIdx];
+    printList(jSequence);
+
+    for (size_t i = 1; i < jSequence.back(); ++i)
+    {
+        std::cout << "i: " << i << std::endl;
+        std::cout << "curentJacElement to find: " << currentJacElement << std::endl;
+        if (i == currentJacElement)
+        {
+            for (size_t j = currentJacElement; j >= 0; --j)
+            {
+                if (j == previous_idx)
+                {
+                    previous_idx = jSequence[jIdx];
+                    jIdx = (jIdx + 1) < jSequence.size() ? jIdx + 1 : jSequence.size();
+                    currentJacElement = jSequence[jIdx];
+                    break;
+                }
+                order.push_back(j);
+            }
+        }
+    }
+    // for (size_t current = 0; current < jacobSequence.back(); ++current)
+    // {
+    //     if (current == jacobSequence[jacobIdx])
+    //     {
+    //         std::cout << "jcbsq found (current: " << current << ", jacobIdx: " << jacobIdx << ")" << std::endl;
+    //         for (size_t i = jacobIdx; i >= 0; --i)
+    //         {
+    //             if (i == previous_idx)
+    //             {
+    //                 jacobIdx = jacobSequence[jac + 1];
+    //                 previous_idx = jacobIdx;
+    //                 break;
+    //             }
+    //             order.push_back(i);
+    //             std::cout << " test "<< i << std::endl;
+    //         }
+    //     }
+
+    printList(order);
+
+    
+    return order;
 }
 
 
