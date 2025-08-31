@@ -6,7 +6,7 @@
 /*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/29 16:24:08 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/08/31 18:39:47 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,51 +222,7 @@ std::vector<size_t> PmergeMe::doJacobsthal(size_t max)
         j1 = jn;
     }
 
-    size_t jIdx = 1;
-    size_t previous_idx = jSequence[jIdx];
-    size_t currentJacElement = jSequence[jIdx];
-    printList(jSequence);
-
-    for (size_t i = 1; i < jSequence.back(); ++i)
-    {
-        std::cout << "i: " << i << std::endl;
-        std::cout << "curentJacElement to find: " << currentJacElement << std::endl;
-        if (i == currentJacElement)
-        {
-            for (size_t j = currentJacElement; j >= 0; --j)
-            {
-                if (j == previous_idx)
-                {
-                    previous_idx = jSequence[jIdx];
-                    jIdx = (jIdx + 1) < jSequence.size() ? jIdx + 1 : jSequence.size();
-                    currentJacElement = jSequence[jIdx];
-                    break;
-                }
-                order.push_back(j);
-            }
-        }
-    }
-    // for (size_t current = 0; current < jacobSequence.back(); ++current)
-    // {
-    //     if (current == jacobSequence[jacobIdx])
-    //     {
-    //         std::cout << "jcbsq found (current: " << current << ", jacobIdx: " << jacobIdx << ")" << std::endl;
-    //         for (size_t i = jacobIdx; i >= 0; --i)
-    //         {
-    //             if (i == previous_idx)
-    //             {
-    //                 jacobIdx = jacobSequence[jac + 1];
-    //                 previous_idx = jacobIdx;
-    //                 break;
-    //             }
-    //             order.push_back(i);
-    //             std::cout << " test "<< i << std::endl;
-    //         }
-    //     }
-
     printList(order);
-
-    
     return order;
 }
 
