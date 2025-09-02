@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/31 18:39:47 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/09/02 13:37:54 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,15 @@ void PmergeMe::doFordJohson()
     // will sort little pairs, big pairs, big big, etc.
     handlePairs();
 
-    jacob_list = doJacobsthal(_pairs.size());
+    // dissociate upper and lower in each pair
+    for (size_t i = 0; i < _pairs.size(); ++i)
+    {
+        _main.push_back(_pairs[i].first);
+        _pendant.push_back(_pairs[i].second);
+    }
+    printList(_main);
+    printList(_pendant);
+    jacob_list = doJacobsthal(_pendant.size());
     
     // jacobLowerInMain(jacob_list);
     // insertLastLowers();
@@ -222,7 +230,7 @@ std::vector<size_t> PmergeMe::doJacobsthal(size_t max)
         j1 = jn;
     }
 
-    printList(order);
+    // TODO
     return order;
 }
 

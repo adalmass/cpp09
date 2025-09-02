@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.hpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aldalmas <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 18:05:33 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/29 15:43:46 by aldalmas         ###   ########.fr       */
+/*   Updated: 2025/09/02 12:38:34 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,10 +32,8 @@ class PmergeMe {
     private:
         std::vector<size_t> _arg_list;
         std::vector< std::pair<size_t, size_t> > _pairs;
-
-        // useless ?
         std::vector<size_t> _main;
-        std::vector<size_t> _remaining_lower;
+        std::vector<size_t> _pendant;
 
     public:
         PmergeMe(char** av);
