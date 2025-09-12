@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aldalmas <aldalmas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/15 15:27:20 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/08/23 10:23:42 by marvin           ###   ########.fr       */
+/*   Updated: 2025/09/08 13:33:10 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,5 +21,6 @@ int main(int ac, char **av)
     PmergeMe list(av + 1);
     
     list.doFordJohson();
-    return (0);
+
+    return 0;
 }

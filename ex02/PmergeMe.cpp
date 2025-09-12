@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   PmergeMe.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: aldalmas <aldalmas@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 17:24:51 by aldalmas          #+#    #+#             */
-/*   Updated: 2025/09/02 13:37:54 by marvin           ###   ########.fr       */
+/*   Updated: 2025/09/09 14:12:14 by aldalmas         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,25 +61,22 @@ void PmergeMe::doFordJohson()
     handlePairs();
 
     // dissociate upper and lower in each pair
+    _main.push_back(_pairs[0].second);
     for (size_t i = 0; i < _pairs.size(); ++i)
     {
         _main.push_back(_pairs[i].first);
-        _pendant.push_back(_pairs[i].second);
+        if (i != 0)
+            _pendant.push_back(_pairs[i].second);
     }
+    std::cout << "main: ";
     printList(_main);
+    std::cout << "pendant: ";
     printList(_pendant);
     jacob_list = doJacobsthal(_pendant.size());
-    
-    // jacobLowerInMain(jacob_list);
-    // insertLastLowers();
-    // // std::cout << "\nlower: "; // debug
-    // // printList(_lower);
-    // // std::cout << "\nremaining_lower: "; // debug
-    // // printList(_remaining_lower);
-    // // std::cout << "\nupper: "; // debug
-    // // printList(_upper);
-    // std::cout << "\nmain: "; // debug
-    // printList(_main);
+    // todo
+    const size_t size = _arg_list.size();
+    if (_arg_list.size() % 2 == 1)
+        binaryInsert(_main, _arg_list[size - 1]);
 }
 
 
@@ -181,41 +178,11 @@ void PmergeMe::binaryInsert(std::vector<size_t>& dest_list, int element)
 }
 
 
-// A REFAIRE
-// third step: use the idx for insert _lower in _main.
-// void PmergeMe::jacobLowerInMain(std::vector<size_t> jacob_list)
-// {
-//     const size_t low_size = _lower.size();
-//     const size_t jac_size = jacob_list.size();
-//     size_t ji = 0;
-//     std::cout << RED "actual main:" RESET << std::endl;
-//     printList(_main);
-//     std::cout << RED "actual lower: " RESET << std::endl;
-//     printList(_lower);
-//     // i = 1 because we already moved the _lower[0] in the main list before this step.
-//     for (size_t i = 1; i < low_size; i++)
-//     {
-//         const size_t current = _lower[i];
-//         if (ji < jac_size && jacob_list[ji] == i)
-//         {
-//             std::cout << current << " added to _main" << std::endl;
-//             binaryInsert(_main, current);
-//             ji++;
-//         }
-//         else
-//         { 
-//             std::cout << current << " added to _remaining_lower" << std::endl;
-//             binaryInsert(_remaining_lower, current);
-//         }
-//     }
-// }
-
-
 std::vector<size_t> PmergeMe::doJacobsthal(size_t max)
 {
     std::vector<size_t> order;
 
-    if (max == 0)
+    if (max <= 1)
         return order;
 
     size_t j0 = 0;
@@ -229,8 +196,40 @@ std::vector<size_t> PmergeMe::doJacobsthal(size_t max)
         j0 = j1;
         j1 = jn;
     }
+    for (size_t t = 2; t < jSequence.size(); ++t)
+    {
+        size_t from = (jSequence[t] > max) ? max : jSequence[t];
+        size_t limit = jSequence[t - 1] + 1;
 
-    // TODO
+        if (from < limit)
+            continue;
+
+        for (size_t x = from; ; --x)
+        {
+            if (x != 1)
+                order.push_back(x - 1); // on convertit en 0-based
+
+            if (x == limit)
+                break;
+        }
+    }
+
+    // --- compléter avec les indices non ajoutés par les blocs
+    std::vector<bool> seen(max, false);
+    for (size_t i = 0; i < order.size(); ++i)
+        seen[order[i]] = true;
+
+    // ne pas ajouter l'élément déjà inséré au tout début
+    for (size_t i = max; i-- > 1; )
+    {
+        if (!seen[i])
+            order.push_back(i);
+    }
+    std::cout << "jacob sequence: ";
+    printList(jSequence);
+    std::cout << "order: ";
+    printList(order);
+    exit(0);
     return order;
 }
 
